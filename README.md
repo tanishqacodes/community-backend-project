@@ -57,10 +57,10 @@ Provide step-by-step instructions on how to set up and run your project locally.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/your-project.git
+git clone https://github.com/tanishqacodes/community-backend-project.git
 
 # Navigate to the project directory
-cd your-project
+cd community-backend-project
 
 # Install dependencies
 npm install
