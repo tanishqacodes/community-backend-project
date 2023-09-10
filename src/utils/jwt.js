@@ -1,7 +1,7 @@
 const { JWT_SECRET } = require('../config/secret');
 const User = require('../models/User.Model');
 const jwt = require('jsonwebtoken');
-// const maxAge = 3 * 24 * 60 * 60;
+const maxAge = 3 * 24 * 60 * 60;
 
 module.exports.generateJWT = (user)=>{
     console.log("secret : ",JWT_SECRET);
@@ -13,7 +13,7 @@ module.exports.generateJWT = (user)=>{
     },
     JWT_SECRET,
     {
-        expiresIn:'1h',
+        expiresIn:maxAge,
     }
     );
 }

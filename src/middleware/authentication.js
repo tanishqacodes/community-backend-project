@@ -24,6 +24,7 @@ module.exports.verifyJWTMiddleware = (req,res,next)=>{
 
 module.exports.getAccessToken = (req,res)=>{
     const token = req.headers.authorization?.split(' ')[1];
+    console.log(" access token : ",token);
     if (!token) {
         return res.status(401).json({ 
             success: false, 
@@ -35,11 +36,7 @@ module.exports.getAccessToken = (req,res)=>{
 }
 
 module.exports.getUserbyToken = (token)=>{
-    try {
-        console.log("token in get user : ",token);
-        const decoded = verifyJWT(token);
-        return decoded;
-    } catch (error) {
-        return null;
-    }
+        // console.log("token in get user : ",token);
+    const decoded = verifyJWT(token);
+    return decoded;
 }
