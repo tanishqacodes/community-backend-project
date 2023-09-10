@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./User.Model');
 
 const communitySchema = mongoose.Schema({
     id:{
@@ -7,7 +8,8 @@ const communitySchema = mongoose.Schema({
     },
     name:{
         type:String,
-        required:true,
+        required:[true,"Please enter name of community"],
+        minlength:[2,'Minimum name length is 2 character.. '],
     },
     slug:{
         type:String,

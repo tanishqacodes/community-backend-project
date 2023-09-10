@@ -4,6 +4,7 @@ const dbConnection = require('./config/database');
 // router
 const authRouter = require('./routes/authRoutes');
 const communityRouter = require('./routes/communityRoutes');
+const roleRouter = require('./routes/roleRoutes');
 
 // middleware
 const app = express();
@@ -26,6 +27,7 @@ dbConnection(()=>{
 
 // routes
 app.use('/v1/auth',authRouter);
-// app.use('/v1/community',communityRouter);
+app.use('/v1/community',communityRouter);
+app.use('/v1/role',roleRouter);
 
 

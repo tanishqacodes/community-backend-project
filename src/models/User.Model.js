@@ -58,4 +58,12 @@ userSchema.statics.login = async function(email,password){
     throw Error('incorrect email');
 }
 
+userSchema.options.toJSON = {
+    transform: function (doc, ret) {
+        // Remove the circular reference and any unwanted properties
+        delete ret.circularReference; // Replace with the actual circular reference field name
+        delete ret.unwantedProperty; // Replace with any unwanted properties
+    },
+};
+
 module.exports = mongoose.model('User',userSchema);
