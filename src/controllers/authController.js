@@ -42,9 +42,7 @@ module.exports.signup = async (req, res) => {
         let id = generateId();
 
         const user =  await User.create({id, name , email , password});
-
         const access_token = generateJWT(user);
-
         if (user) {
             return res.status(201).json({
                 status: true,
