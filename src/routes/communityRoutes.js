@@ -6,6 +6,6 @@ router.post('/',communityController.create);
 router.get('/',communityController.getAllCommunity);
 router.get('/me/owner',communityController.myOwnedCommunity);
 router.get('/:id/members',communityController.getAllCommunityMembers);
-// router.get('/me/member',communityController.myOwnedCommunity);
+router.get('/me/member',communityController.myJoinedCommunity);
 
 module.exports = router;

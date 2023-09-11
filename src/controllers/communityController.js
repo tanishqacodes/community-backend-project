@@ -194,82 +194,155 @@ module.exports.myOwnedCommunity = async (req, res) => {
     }
 }
 
-module.exports.getAllCommunityMembers = async (req,res)=>{
-    
-    const  communityId = req.params;
+module.exports.getAllCommunityMembers = async (req, res) => {
+
+    const communityId = req.params;
     // console.log(communityId.id);
 
-    const page = req.query.page || 1;
-    const perPage = 10;
-    const skip = (page - 1) * perPage;
-    const collection = await Member.find({ community : communityId.id }).skip(skip).limit(perPage);
-    // console.log(collection);
+    try {
 
-    const communityMember = [];
+        const page = req.query.page || 1;
+        const perPage = 10;
+        const skip = (page - 1) * perPage;
+        const collection = await Member.find({ community: communityId.id }).skip(skip).limit(perPage);
+        // console.log(collection);
 
-    // const communities = await Community.find().skip(skip).limit(perPage);
+        const communityMember = [];
 
-    for(const ele of collection){
-        const result = {};
-        result.id = ele.id;
-        result.community = ele.community;
+        // const communities = await Community.find().skip(skip).limit(perPage);
 
-        // user
-        const userData = await User.findOne({ id : ele.user });
-        if(!userData){
-            res.status(500).json({
-                success: false,
-                error: "User does not exits anymore..."
-            });
-        }
-        result.user = {
-            id : userData.id,
-            name : userData.name,
-        }
+        for (const ele of collection) {
+            const result = {};
+            result.id = ele.id;
+            result.community = ele.community;
 
-        // role
-        const roleData = await Role.findOne( { id : ele.role });
-        if(!roleData){
-            res.status(500).json({
-                success: false,
-                error: "Role does not exits anymore..."
-            });
-        }
-        result.role = {
-            id : roleData.id,
-            name : roleData.name
-        }
+            // user
+            const userData = await User.findOne({ id: ele.user });
+            if (!userData) {
+                res.status(500).json({
+                    success: false,
+                    error: "User does not exits anymore..."
+                });
+            }
+            result.user = {
+                id: userData.id,
+                name: userData.name,
+            }
 
-        result.created_at = ele.created_at,
+            // role
+            const roleData = await Role.findOne({ id: ele.role });
+            if (!roleData) {
+                res.status(500).json({
+                    success: false,
+                    error: "Role does not exits anymore..."
+                });
+            }
+            result.role = {
+                id: roleData.id,
+                name: roleData.name
+            }
 
-        communityMember.push(result);
-    };
+            result.created_at = ele.created_at,
 
-    console.log(communityMember);
-    const total = communityMember.length;
+                communityMember.push(result);
+        };
 
-    res.status(200).json({
-        status:true,
-        content:{
-            meta:{
-                total:total,
-                pages : Math.ceil(total/perPage),
-                page:page
-            },
-            data : communityMember
-        }
-    });
+        // console.log(communityMember);
+        const total = communityMember.length;
+
+        res.status(200).json({
+            status: true,
+            content: {
+                meta: {
+                    total: total,
+                    pages: Math.ceil(total / perPage),
+                    page: page
+                },
+                data: communityMember
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: "Internal Server Error"
+        });
+    }
 }
 
 
-// module.exports.myJoinedCommunity = async (req, res) => {
-//     var token = getAccessToken(req, res);
-//     // console.log("token : ", token);
-//     var user = getUserbyToken(token);
-//     // console.log("user ; ", user);
+module.exports.myJoinedCommunity = async (req, res) => {
+    var token = getAccessToken(req, res);
+    // console.log("token : ", token);
+    var userData = getUserbyToken(token);
+    // console.log("user ; ", user);
 
-//     const comm = [];
+    try {
+        const page = req.query.page || 1;
+        const perPage = 10;
+        const skip = (page - 1) * perPage;
 
+        const communities = await Member.find({ user: userData.id }).skip(skip).limit(perPage);
+        // console.log("comunities : ",communities);
 
+        const myJoinedCommunities = [];
 
-// }
+        for (const data of communities) {
+            // console.log("data : ",data);
+            const result = {};
+            const communityData = await Community.findOne({ id: data.community });
+
+            if (!communityData) {
+                res.status(400).json({
+                    success: false,
+                    error: "Community does not exists."
+                });
+            }
+
+            // console.log(communityData);
+            result.id = communityData.id;
+            result.name = communityData.name;
+            result.slug = communityData.slug;
+
+            // user data
+            const ownerData = await User.findOne({ id: communityData.owner });
+            if (!ownerData) {
+                res.status(400).json({
+                    success: false,
+                    error: "User does not exists."
+                });
+            }
+            // console.log("owner data : ",ownerData);
+            result.owner = {
+                id: ownerData.id,
+                name: ownerData.name,
+            };
+
+            result.created_at = communityData.created_at;
+            result.updated_at = communityData.updated_at;
+
+            myJoinedCommunities.push(result);
+        }
+
+        // console.log("my joined community : ",myJoinedCommunities);
+
+        const total = myJoinedCommunities.length;
+
+        res.status(200).json({
+            status: true,
+            content: {
+                meta: {
+                    total: total,
+                    pages: Math.ceil(total / perPage),
+                    page: page
+                },
+                data: myJoinedCommunities
+            }
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: "Internal Server Error"
+        });
+    }
+
+}
