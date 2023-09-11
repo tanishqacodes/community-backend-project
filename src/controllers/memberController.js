@@ -93,8 +93,9 @@ module.exports.addMember = async (req, res) => {
     }
 }
 
-module.exports.deleteMember = async (req,res)=>{
+module.exports.deleteMember = async (req, res) => {
     const deleteId = req.params;
+    console.log(deleteId.id);
 
     const token = req.headers.authorization?.split(' ')[1];
     // console.log(" access token : ",token);
@@ -106,7 +107,51 @@ module.exports.deleteMember = async (req,res)=>{
     }
     // console.log("token : ",token);
 
-    var data = verifyJWT(token);
+    var userData = verifyJWT(token);
 
-    c
+    console.log("user data : ", userData);
+
+    const memberData = await Member.findOne({ id: deleteId.id });
+    console.log(memberData);
+
+    const communityData = await Member.find({ community: memberData.community });
+    console.log("community data : ", communityData);
+
+    for (const element of communityData) {
+        console.log(element.user, userData.id);
+        if (element.user === userData.id) {
+            const roleData = await Role.findOne({ id: element.role });
+            if (!roleData) {
+                res.status(400).json({
+                    success: false,
+                    error: 'role does not exits',
+                });
+            }
+            console.log("role data : ",roleData);
+            if(roleData.name === "Community Moderator"  || roleData.name === "Community Admin"){
+                console.log("role name : ", roleData.name);
+
+                const result = await Member.deleteOne({ id : memberData.id });
+                // console.log("deleted :",result);
+                if(result.deletedCount === 1){
+                    res.status(200).json({
+                        status: true,
+                    });
+                }
+                res.status(500).json({
+                    status: false,
+                    error : 'internal server error ,  member not deleted.',
+                });
+            }
+            res.status(400).json({
+                success: false,
+                error: 'NOT_ALLOWED_ACCESS',
+            });
+        }
+    }
+
+    res.status(400).json({
+        success: false,
+        error: 'improper input',
+    });
 }
