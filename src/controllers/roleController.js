@@ -31,13 +31,13 @@ module.exports.create = async (req, res) => {
         });
 
         let roleSaved = await role.save();
+        console.log(roleSaved);
         if (!roleSaved) {
             return res.status(500).json({
                 success: false,
-                error: ' Internal Server error , role not saved...',
+                error: ' Internal Server error ,role not saved...',
             });
         }
-
         res.status(200).json({
             status: true,
             content: {

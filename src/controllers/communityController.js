@@ -56,7 +56,8 @@ module.exports.create = async (req, res) => {
         var memberCommunity = id;
         var memberUser = user.id;
         // id of community admin
-        var roleData = await Role.findOne({ name: "Community Admin" });
+        var roleData = await Role.findOne({ name: "Community  Admin" });
+        console.log("role data : ",roleData);
         var memberRole = roleData.id;
         let member = new Member({
             id: memberId,
@@ -90,6 +91,7 @@ module.exports.create = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error);
         const errors = handleErrors(error);
         res.status(400).json({ errors });
     }

@@ -128,22 +128,22 @@ module.exports.deleteMember = async (req, res) => {
                 });
             }
             console.log("role data : ",roleData);
-            if(roleData.name === "Community Moderator"  || roleData.name === "Community Admin"){
+            if(roleData.name === "Community Moderator"  || roleData.name === "Community  Admin"){
                 console.log("role name : ", roleData.name);
 
                 const result = await Member.deleteOne({ id : memberData.id });
                 // console.log("deleted :",result);
                 if(result.deletedCount === 1){
-                    res.status(200).json({
+                    return res.status(200).json({
                         status: true,
                     });
                 }
-                res.status(500).json({
+                return res.status(500).json({
                     status: false,
                     error : 'internal server error ,  member not deleted.',
                 });
             }
-            res.status(400).json({
+            return res.status(400).json({
                 success: false,
                 error: 'NOT_ALLOWED_ACCESS',
             });
