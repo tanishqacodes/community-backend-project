@@ -38,18 +38,8 @@ module.exports.signup = async (req, res) => {
                 success: false,
                 error: 'User already exists',
             });
-        }
-        // let hashedPassword = await hashPassword(password);
+        }   
         let id = generateId();
-
-        // let user = new User({
-        //     id: id,
-        //     name: name,
-        //     email: email,
-        //     password: hashedPassword
-        // });
-
-        // let dataSaved = await user.save();
 
         const user =  await User.create({id, name , email , password});
 
